@@ -1,7 +1,7 @@
-var $ = require('jquery');
+var $ = jQuery = require('jquery');
+var Bootstrap = require('bootstrap');
 var ol = require('openlayers');
 var Human = require('./js/human');
-// var Komugi = require('./js/komugi');
 
 var CountryJSON = "";//jsonデータ保持
 
@@ -21,18 +21,58 @@ var main = function() {
     })
   ];
   layerList = layerList.concat(human.getLayers());//配列結合
-
   var map = new ol.Map({
     target: 'map',
     layers: layerList,
     view: new ol.View({
       center: ol.proj.transform([0.00, 0.00],  'EPSG:4326', 'EPSG:3857'),
-      zoom: 1,
-      maxZoom: 1,
-      minZoom: 1
+      maxZoom: 5,
+      minZoom: 1,
+      zoom: 1
     }),
     logo: false,
 
+  });
+
+  // Click
+  var el = document.getElementById('popup');
+  var popup = new ol.Overlay({
+    element: el,
+    positioning: 'top-center',
+    stopEvent: false
+  });
+  map.addOverlay(popup);
+  map.on('click', function(event) {
+    var feature = map.forEachFeatureAtPixel(event.pixel,
+      function(feature, layer) {
+        return feature;
+      });
+    if (feature) {
+      var geometry = feature.getGeometry();
+      var coord = geometry.getCoordinates();
+      popup.setPosition(coord);
+      // TODO: popoverに表示されている文字が更新されない問題
+      var showstr = feature.get('countryName');
+      $(".popover-content").text(showstr);
+      $(el).popover({
+        'placement': 'top',
+        'html': true,
+        'content': function() {
+          return showstr;
+        }
+      });
+      $(el).popover('show');
+    } else {
+      $(el).popover('destroy');
+    }
+  });
+
+  // OverMouse
+  map.on('pointermove', function(e) {
+    if (e.dragging) {
+      $(el).popover('destroy');
+      return;
+    }
   });
 
   // Animation
@@ -41,7 +81,7 @@ var main = function() {
     map.render();
   });
 
-  map.render();
+  //map.render();
 };
 
 $(function() {
@@ -51,12 +91,10 @@ $(function() {
     url: "http://localhost:3000/country.json",
     dataType: "json",
     success: function(data) {
-      console.log(data);
       CountryJSON = data;
       main();
     },
     error: function(XMLHttpRequest, textStatus, errorThrown) {
-      console.log(textStatus);
     }
   });
   //main();

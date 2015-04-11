@@ -23,7 +23,8 @@ var HumanIcon = IconObj.extend({
         anchorYUnits: 'pixels',
         opacity: 1,
         scale: 0.2,
-        src: 'images/hato.png'
+        src: 'images/hato.png',
+        country: "国名"
       }))
     });
   
@@ -44,6 +45,7 @@ var HumanIcon = IconObj.extend({
     var p = ol.proj.transform([this.get("lon"), this.get("lat")], 'EPSG:4326', 'EPSG:3857');
     this.set({feature:
       new ol.Feature({
+        countryName: this.get("country"),
         geometry: new ol.geom.Point(p)
       })
     });
