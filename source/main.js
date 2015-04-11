@@ -1,9 +1,11 @@
 var $ = require('jquery');
 var ol = require('openlayers');
+var Human = require('./js/human');
 // var Komugi = require('./js/komugi');
 
 $(function() {
   // var komugi = new Komugi();
+  var human = new Human();
 
   var map = new ol.Map({
     target: 'map',
@@ -17,7 +19,8 @@ $(function() {
         // source: new ol.source.OSM()
         // source: new ol.source.MapQuest({layer: 'osm'})
         source: new ol.source.MapQuest({layer: 'sat'})
-      })
+      }),
+      human.get("layer")
     ],
     view: new ol.View({
       center: ol.proj.transform([0.00, 0.00],  'EPSG:4326', 'EPSG:3857'),
@@ -28,4 +31,13 @@ $(function() {
     logo: false,
 
   });
+
+  // Animation
+  map.on('postcompose', function(event) {
+    human.update(event);
+    map.render();
+  });
+
+  map.render();
+
 });

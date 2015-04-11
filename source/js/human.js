@@ -4,7 +4,6 @@ var _ = require('underscore');
 
 var HumanIcon = IconObj.extend({
   defaults: function () {
-    console.log("call HumanIcon");
     return _.defaults({
       imgSrc: "images/hato.png",
       iconStyle: null,
@@ -15,7 +14,6 @@ var HumanIcon = IconObj.extend({
     }, _.result(IconObj.prototype, 'defaults'));
   },
   getIconStyle: function() {
-    console.log("new hato");
     return new ol.style.Style({
       image: new ol.style.Icon(({
         anchor:[0.5, 46],
@@ -29,7 +27,6 @@ var HumanIcon = IconObj.extend({
   
   },
   initialize: function(attrs, options) {
-    console.log("initialize HumanIcon");
     // 画像指定
     var iconStyle = new ol.style.Style({
       image: new ol.style.Icon(({
@@ -42,7 +39,6 @@ var HumanIcon = IconObj.extend({
       }))
     });
     //this.set({iconStyle: iconStyle});
-    console.log(this.get("lon"));
     var p = ol.proj.transform([this.get("lon"), this.get("lat")], 'EPSG:4326', 'EPSG:3857');
     this.set({feature:
       new ol.Feature({
@@ -62,14 +58,9 @@ var HumanIcon = IconObj.extend({
   update: function(e) {
     var lon = this.get("lon");
     var lat = this.get("lat");
-    //var p = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
-    var p = ol.proj.transform([lon + 10, lat + 10], 'EPSG:4326', 'EPSG:3857');
-    this.set({ lon: lon+0.001, lat: lat+0.001 });
-    console.log(p);//緯度経度変換後
-    console.log(lon + "," + lat);
-    console.log("update!," + p);
+    var p = ol.proj.transform([lon + 1, lat + 1], 'EPSG:4326', 'EPSG:3857');
+    this.set({ lon: lon+1, lat: lat+1 });
     var vc = e.vectorContext;
-    console.log(this.getIconStyle());
     var iconStyle = new ol.style.Style({
       image: new ol.style.Icon(({
         anchor:[0.5, 46],
