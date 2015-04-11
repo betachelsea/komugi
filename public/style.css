@@ -8,6 +8,10 @@ h1:hover {
 h2 {
   color: blue;
 }
+
+a {
+  color: #3b3b3b;
+}
 h3 {
   color: yellow;
 }
