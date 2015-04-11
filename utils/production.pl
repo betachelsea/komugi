@@ -21,6 +21,8 @@ while (<$production_file>) {
     next;
   }
 
+  $line =~ s/, //g;
+
   my @data_array = split /,/, $line;
   my $country = quote_str($data_array[3]);
   my $year = quote_str($data_array[8]);
