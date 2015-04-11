@@ -3,9 +3,11 @@ var ol = require('openlayers');
 var Human = require('./js/human');
 // var Komugi = require('./js/komugi');
 
-$(function() {
-  // var komugi = new Komugi();
+var CountryJSON = "";//jsonデータ保持
+
+var main = function() {
   var human = new Human();
+  human.init(CountryJSON);
   var layerList = [
     new ol.layer.Tile({
       // source: new ol.source.BingMaps({
@@ -25,9 +27,9 @@ $(function() {
     layers: layerList,
     view: new ol.View({
       center: ol.proj.transform([0.00, 0.00],  'EPSG:4326', 'EPSG:3857'),
-      zoom: 3,
-      maxZoom: 3,
-      minZoom: 3
+      zoom: 1,
+      maxZoom: 1,
+      minZoom: 1
     }),
     logo: false,
 
@@ -40,5 +42,22 @@ $(function() {
   });
 
   map.render();
+};
 
+$(function() {
+  // data優先読み込み
+  $.ajax({
+    type: "GET",
+    url: "http://localhost:3000/country.json",
+    dataType: "json",
+    success: function(data) {
+      console.log(data);
+      CountryJSON = data;
+      main();
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+      console.log(textStatus);
+    }
+  });
+  //main();
 });

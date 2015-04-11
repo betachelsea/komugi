@@ -2,6 +2,7 @@ var ol = require('openlayers');
 var IconObj = require('./iconObj');
 var _ = require('underscore');
 var Backbone = require('backbone');
+var $ = require('jquery');
 
 var HumanIcon = IconObj.extend({
   defaults: function () {
@@ -83,16 +84,16 @@ var HumanCollection = Backbone.Collection.extend({
 });
 
 
-var HumanManager = function() {};
+var HumanManager = function() {
+  this.humanCollection;
+};
 HumanManager.prototype = {
+  init: function(country_json) {
+    this.humanCollection = new HumanCollection(country_json);
+  },
   getLayers: function() {
-    var humanCollection = new HumanCollection([
-      {lat: 0, lng: 0},
-      {lat: 5, lng: 10},
-      {lat: -5, lng: -5}
-    ]);
     var layers = [];
-    humanCollection.each(function(item) {
+    this.humanCollection.each(function(item) {
       layers.push(item.get("layer"));
     });
     return layers;
