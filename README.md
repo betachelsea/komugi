@@ -7,3 +7,8 @@ $ npm install
 $ npm start
 ```
 
+css minify
+```
+$ gulp scss
+```
+
