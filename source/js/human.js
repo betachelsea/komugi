@@ -12,24 +12,41 @@ var HumanIcon = IconObj.extend({
       layer: null,
       lon: 30,
       lat: 30,
+      Export: 0, //輸出
+      Import: 0, //輸入
+      Population: 0, // 人口
+      Production: 0, // 収穫量
+      Rank: 1, // 太ってる度合い 1~5
+      ProdPerPerson: 0, // 一人当たりの収穫量
       feature: null
     }, _.result(IconObj.prototype, 'defaults'));
   },
   getIconStyle: function() {
+    var imgList = [
+      'images/test1.png',
+      'images/test2.png',
+      'images/test3.png',
+      'images/test4.png',
+      'images/test5.png'
+    ];
+    var showImg = imgList[this.get("Rank") - 1];
     return new ol.style.Style({
       image: new ol.style.Icon(({
         anchor:[0.5, 46],
+        //anchor:[0, 0],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
         opacity: 1,
-        scale: 0.2,
-        src: 'images/hato.png',
+        scale: 0.05,
+        //size: [20, 20],
+        src: showImg,
         country: "国名"
       }))
     });
   
   },
   initialize: function(attrs, options) {
+    console.log(this);
     // 画像指定
     var iconStyle = new ol.style.Style({
       image: new ol.style.Icon(({
@@ -91,6 +108,7 @@ var HumanManager = function() {
 };
 HumanManager.prototype = {
   init: function(country_json) {
+    console.log(country_json);
     this.humanCollection = new HumanCollection(country_json);
   },
   getLayers: function() {

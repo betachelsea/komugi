@@ -2,12 +2,15 @@ var $ = jQuery = require('jquery');
 var Bootstrap = require('bootstrap');
 var ol = require('openlayers');
 var Human = require('./js/human');
+var _ = require('underscore');
 
 var CountryJSON = "";//jsonデータ保持
+var KomugiJSON = "";//jsonデータ保持
+var AllJSON = ""; //結合
 
 var main = function() {
   var human = new Human();
-  human.init(CountryJSON);
+  human.init(AllJSON);
   var layerList = [
     new ol.layer.Tile({
       // source: new ol.source.BingMaps({
@@ -86,16 +89,41 @@ var main = function() {
 
 $(function() {
   // data優先読み込み
-  $.ajax({
-    type: "GET",
-    url: "http://localhost:3000/country.json",
-    dataType: "json",
-    success: function(data) {
-      CountryJSON = data;
-      main();
-    },
-    error: function(XMLHttpRequest, textStatus, errorThrown) {
-    }
-  });
-  //main();
+  var getCountry = function() {
+    $.ajax({
+      type: "GET",
+      url: "http://localhost:3000/country.json",
+      dataType: "json",
+      success: function(data) {
+        CountryJSON = data;
+        var yearDataObj = KomugiJSON["1996"];
+        var list = [];
+        for (var i=0; i<CountryJSON.length; i++) {
+          var item = CountryJSON[i];
+          if (!item) continue;
+          var detail = yearDataObj[item["country"]]
+          if (!detail) continue;
+          list.push(_.extend(item, detail));
+        }
+        AllJSON = list;
+        main();
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown) {
+      }
+    });
+  };
+  var getKomugiDatas = function() {
+    $.ajax({
+      type: "GET",
+      url: "http://localhost:3000/Wheat_data_all.json",
+      dataType: "json",
+      success: function(data) {
+        KomugiJSON = data;
+        getCountry();
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown) {
+      }
+    });
+  };
+  getKomugiDatas();
 });
