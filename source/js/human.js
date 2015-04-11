@@ -1,6 +1,7 @@
 var ol = require('openlayers');
 var IconObj = require('./iconObj');
 var _ = require('underscore');
+var Backbone = require('backbone');
 
 var HumanIcon = IconObj.extend({
   defaults: function () {
@@ -8,8 +9,8 @@ var HumanIcon = IconObj.extend({
       imgSrc: "images/hato.png",
       iconStyle: null,
       layer: null,
-      lon: 0,
-      lat: 0,
+      lon: 30,
+      lat: 30,
       feature: null
     }, _.result(IconObj.prototype, 'defaults'));
   },
@@ -72,8 +73,34 @@ var HumanIcon = IconObj.extend({
       }))
     });
 
-    vc.drawFeature(new ol.Feature(new ol.geom.Point(p)), iconStyle);
+    // Animation?
+    //vc.drawFeature(new ol.Feature(new ol.geom.Point(p)), iconStyle);
   }
 });
 
-module.exports = HumanIcon; //Backbone Model
+var HumanCollection = Backbone.Collection.extend({
+  model: HumanIcon
+});
+
+
+var HumanManager = function() {};
+HumanManager.prototype = {
+  getLayers: function() {
+    var humanCollection = new HumanCollection([
+      {lat: 0, lng: 0},
+      {lat: 5, lng: 10},
+      {lat: -5, lng: -5}
+    ]);
+    var layers = [];
+    humanCollection.each(function(item) {
+      layers.push(item.get("layer"));
+    });
+    return layers;
+  },
+  update: function(e) {
+    //console.log("TODO:update");
+  }
+};
+
+//module.exports = HumanIcon; //Backbone Model
+module.exports = HumanManager;
