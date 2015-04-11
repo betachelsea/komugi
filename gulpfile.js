@@ -15,24 +15,10 @@ gulp.task("sass", function() {
 
 gulp.task("js", function() {
   browserify({
-    entries: ['./source/browserify.js']
+    entries: ['./source/main.js']
   }).bundle()
   .pipe(source('vendors.js'))
   .pipe(gulp.dest('./public/'));
-
-  // 読み込み順があれば
-  var js_original_resources = [
-    'source/js/**/*.js'
-  ];
-  gulp.src(js_original_resources)
-      .pipe(tap(function(file) {
-        file.contents = Buffer.concat([
-          new Buffer("(function(){\n"),
-          new Buffer("'use strict';\n"),
-          file.contents,
-            new Buffer("})();")
-        ]);
-      }))
-      .pipe(concat('application.js'))
-      .pipe(gulp.dest('./public/'));
 });
+
+gulp.task("default", ['sass', 'js']);

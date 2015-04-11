@@ -7,12 +7,7 @@ $ npm install
 $ npm start
 ```
 
-js compile
+source compile
 ```
-$ gulp js
-```
-
-css minify
-```
-$ gulp scss
+$ gulp
 ```

@@ -1,7 +1,10 @@
 var $ = require('jquery');
 var ol = require('openlayers');
+var Komugi = require('./js/komugi');
 
 $(function() {
+  var komugi = new Komugi();
+  alert( "komugi level" + komugi.level );
   var map = new ol.Map({
     target: 'map',
     layers: [
