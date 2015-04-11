@@ -1,7 +1,31 @@
-h1 {
-  color: red;
-  &:hover {
-    color: blue;
-  }
+body{
+  margin: 0 auto;
+  text-align: center;
+  font-family: "小塚ゴシック Pro R",'メイリオ','Meiryo','Hiragino Kaku Gothic Pro','ヒラギノ角ゴ Pro W3','Osaka','ＭＳ Ｐゴシック',sans-serif;
 }
 
+.map {
+  height: 400px;
+  width: 100%;
+}
+
+#top{
+  width: auto;
+}
+
+#topImage{
+  width: 100%;
+}
+
+#scrollArrow{
+  text-align: center;
+}
+
+#arrow{
+  text-align: center;
+}
+
+#welcome{
+  color: green;
+
+}
