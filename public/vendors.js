@@ -116,7 +116,7 @@ $(function() {
   var getCountry = function() {
     $.ajax({
       type: "GET",
-      url: "./country.json",
+      url: "http://komugi-api.azurewebsites.net/api/country/2",
       dataType: "json",
       success: function(data) {
         CountryJSON = data;
@@ -139,7 +139,7 @@ $(function() {
   var getKomugiDatas = function() {
     $.ajax({
       type: "GET",
-      url: "./Wheat_data_all.json",
+      url: "http://komugi-api.azurewebsites.net/api/country/3",
       dataType: "json",
       success: function(data) {
         KomugiJSON = data;
