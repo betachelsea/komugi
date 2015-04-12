@@ -20,7 +20,7 @@ while (<$large_country_file>) {
 
 my @country_list = ();
 my %country_data_hash = ();
-while (<>) {
+while (<STDIN>) {
   chomp;
   my $country = $_;
   push @country_list, $country;
