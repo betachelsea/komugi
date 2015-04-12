@@ -3,6 +3,7 @@ var IconObj = require('./iconObj');
 var _ = require('underscore');
 var Backbone = require('backbone');
 var $ = require('jquery');
+var TransferManager = require('./transfer');
 
 var HumanIcon = IconObj.extend({
   defaults: function () {
@@ -46,7 +47,6 @@ var HumanIcon = IconObj.extend({
   
   },
   initialize: function(attrs, options) {
-    console.log(this);
     // 画像指定
     var iconStyle = new ol.style.Style({
       image: new ol.style.Icon(({
@@ -108,7 +108,6 @@ var HumanManager = function() {
 };
 HumanManager.prototype = {
   init: function(country_json) {
-    console.log(country_json);
     this.humanCollection = new HumanCollection(country_json);
   },
   getLayers: function() {
