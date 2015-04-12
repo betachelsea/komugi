@@ -32,6 +32,7 @@ var Transfer = Backbone.Model.extend({
   defaults: {
     start_latlng: [0, 0], //開始座標
     end_latlng: [0, 0], //終了座標
+    country: "", //国名
     //Export: 0, //輸出量
     //Import: 0, //輸入量
     distance: 0 //距離
@@ -47,6 +48,8 @@ var TransferCollection = Backbone.Collection.extend({
 
 var TransferManager = function() {
   this.transferCollection;
+  this.vectorSource = new ol.source.Vector();
+
 };
 TransferManager.prototype = {
   initialize: function(json) {
@@ -58,13 +61,13 @@ TransferManager.prototype = {
     }
     console.log(forSearchData);
     for (var j=0; j<json.length; j++) {
-      if (j > 10) continue;
+      //if (j > 10) continue;
       var item = json[j];
       var slat = item.lat;
       var slon = item.lon;
       var distance_list = item.distance_list;
       for (var i=0; i<distance_list.length; i++) {
-        if (i > 5) continue;
+        //if (i > 5) continue;
         var hitCountryData = forSearchData[distance_list[i].country];
         if (!hitCountryData) continue;
         var elat = hitCountryData.lat;
@@ -72,7 +75,8 @@ TransferManager.prototype = {
         var transferModel = new Transfer({
           start_latlng: [slat, slon],
           end_latlng: [elat, elon],
-          distance: distance_list[i].distance
+          distance: distance_list[i].distance,
+          country: item.country
         });
         this.transferCollection.push(transferModel);
       }
@@ -82,58 +86,50 @@ TransferManager.prototype = {
   makeTransferRoutes: function() {
     
   },
-  paint: function(map) {
-    //var vectorContext = event.vectorContext;
-    //var frameState = event.frameState;
-    /*
-    var theta = 2 * Math.PI * frameState.time / omegaTheta;
-    var coordinates = [];
-    var i;
-    for (i = 0; i < n; ++i) {
-    var t = theta + 2 * Math.PI * i / n;
-    var x = (R + r) * Math.cos(t) + p * Math.cos((R + r) * t / r);
-    var y = (R + r) * Math.sin(t) + p * Math.sin((R + r) * t / r);
-    coordinates.push([x, y]);
-    }*/
-    //vectorContext.setImageStyle(imageStyle);
-    
+  paintOneCountry: function(map, countryName) {
+    this.vectorSource.clear();
+    var showlist = this.transferCollection.where({ country: countryName })
+    console.log(showlist);
     var featureList = [];
-    this.transferCollection.each(function(item){
-      console.log(item);
-      //var sp = new ol.geom.Point(item.get("start_latlng")[0], item.get("start_latlng")[1]);
-      //var ep = new ol.geom.Point(item.get("end_latlng")[0], item.get("end_latlng")[1]);
-      //var feature = new ol.Feature.Vector(new ol.Geometry.LineString([sp, ep]));
-      var sp = ol.proj.transform(
-        [item.get("start_latlng")[1], item.get("start_latlng")[0]],
-        'EPSG:4326', 'EPSG:3857');
-      var ep = ol.proj.transform(
-        [item.get("end_latlng")[1], item.get("end_latlng")[0]],
-        'EPSG:4326', 'EPSG:3857');
-      var feature = new ol.Feature({
-        geometry: new ol.geom.LineString([sp, ep]),
-        name: 'Line'
-      });
-      featureList.push(feature);
-      //console.log(item);
+    for (var i=0; i<showlist.length; i++) {
+      featureList.push(this.getFeatureFromModel(showlist[i]));
+    }
+    this.vectorSource = new ol.source.Vector({
+      features: featureList
     });
     var layerLines = new ol.layer.Vector({
-      source: new ol.source.Vector({
-        features: featureList
-      })
+      source: this.vectorSource
     });
-    //vector.addFeatures(featureList);
     map.addLayer(layerLines);
-    /*
-    vectorContext.drawMultiPointGeometry(
-    new ol.geom.MultiPoint(coordinates), null);
-
-    var headPoint = new ol.geom.Point(coordinates[coordinates.length - 1]);
-    var headFeature = new ol.Feature(headPoint);
-    vectorContext.drawFeature(headFeature, headInnerImageStyle);
-
-    vectorContext.setImageStyle(headOuterImageStyle);
-    vectorContext.drawMultiPointGeometry(headPoint, null);
-    */
+  },
+  paint: function(map) {
+    this.vectorSource.clear();
+    var featureList = [];
+    //線が多すぎるとアイコンが見えない
+    for (var i=0; i<150; i++) {
+      var item = this.transferCollection.models[i];
+      var feature = this.getFeatureFromModel(item);
+      featureList.push(feature);
+    }
+    this.vectorSource = new ol.source.Vector({
+      features: featureList
+    });
+    var layerLines = new ol.layer.Vector({
+      source: this.vectorSource
+    });
+    map.addLayer(layerLines);
+  },
+  getFeatureFromModel: function(model) {
+    var sp = ol.proj.transform(
+      [model.get("start_latlng")[1], model.get("start_latlng")[0]],
+      'EPSG:4326', 'EPSG:3857');
+    var ep = ol.proj.transform(
+      [model.get("end_latlng")[1], model.get("end_latlng")[0]],
+      'EPSG:4326', 'EPSG:3857');
+    return new ol.Feature({
+      geometry: new ol.geom.LineString([sp, ep]),
+      name: 'Line'
+    });
   }
 };
 

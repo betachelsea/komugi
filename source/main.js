@@ -69,6 +69,9 @@ var main = function() {
         }
       });
       $(el).popover('show');
+      // clickで表示
+      console.log(feature);
+      transferManager.paintOneCountry(map, feature.get("countryName"));
     } else {
       $(el).popover('destroy');
     }
