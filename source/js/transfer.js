@@ -39,7 +39,7 @@ var Transfer = Backbone.Model.extend({
   },
   initialize: function(attrs, options) {
     console.log("Calc");
-    
+
   }
 });
 var TransferCollection = Backbone.Collection.extend({
@@ -65,17 +65,40 @@ TransferManager.prototype = {
       var item = json[j];
       var slat = item.lat;
       var slon = item.lon;
+      if (item.Rank >= 3) {
+        continue;
+      }
       var distance_list = item.distance_list;
+      var distance_count_list = Array();
       for (var i=0; i<distance_list.length; i++) {
+          if (distance_count_list.length <= 3) {
+            distance_count_list.push(distance_list[i]);
+          } else if (distance_count_list[2].distance > distance_list[i].distance) {
+            distance_count_list.push(distance_list[i]);
+          }
+          distance_count_list.sort(function(value1, value2) {
+              if (value1.distance == value2.distance) {
+                return 0;
+              } else if (value1.distance < value2.distance) {
+                return -1;
+              }
+              return 1;
+          });
+          if (distance_count_list.length > 3) {
+            distance_count_list.pop();
+          }
+      }
+
+      for (var i=0; i<distance_count_list.length; i++) {
         //if (i > 5) continue;
-        var hitCountryData = forSearchData[distance_list[i].country];
+        var hitCountryData = forSearchData[distance_count_list[i].country];
         if (!hitCountryData) continue;
         var elat = hitCountryData.lat;
         var elon = hitCountryData.lon;
         var transferModel = new Transfer({
           start_latlng: [slat, slon],
           end_latlng: [elat, elon],
-          distance: distance_list[i].distance,
+          distance: distance_count_list[i].distance,
           country: item.country
         });
         this.transferCollection.push(transferModel);
@@ -84,7 +107,7 @@ TransferManager.prototype = {
     console.log(this.transferCollection);// 4000件くらいの国同士のつながりを保持
   },
   makeTransferRoutes: function() {
-    
+
   },
   paintOneCountry: function(map, countryName) {
     this.vectorSource.clear();
@@ -106,7 +129,7 @@ TransferManager.prototype = {
     this.vectorSource.clear();
     var featureList = [];
     //線が多すぎるとアイコンが見えない
-    for (var i=0; i<150; i++) {
+    for (var i=0; i<this.transferCollection.models.length; i++) {
       var item = this.transferCollection.models[i];
       var feature = this.getFeatureFromModel(item);
       featureList.push(feature);
