@@ -13,9 +13,7 @@ var main = function() {
     console.log($("timeline"));
     var timeline = $("#timeline");
     timeline.on("change", function(event) { 
-        console.log("hoge");
-        console.log(event);
-        console.log(event.value);
+        console.log(this.value);
     });
   var transferManager = new TransferManager();
   transferManager.initialize(AllJSON);
