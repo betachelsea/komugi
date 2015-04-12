@@ -116,6 +116,8 @@ TransferManager.prototype = {
     var featureList = [];
     for (var i=0; i<showlist.length; i++) {
       featureList.push(this.getFeatureFromModel(showlist[i]));
+      var circleModel = this.getCircleFromModel(showlist[i]);
+      featureList.push(circleModel);
     }
     this.vectorSource = new ol.source.Vector({
       features: featureList
@@ -152,6 +154,16 @@ TransferManager.prototype = {
     return new ol.Feature({
       geometry: new ol.geom.LineString([sp, ep]),
       name: 'Line'
+    });
+  },
+  getCircleFromModel: function(model) {
+    var ep = ol.proj.transform(
+      [model.get("end_latlng")[1], model.get("end_latlng")[0]],
+      'EPSG:4326', 'EPSG:3857');
+    console.log(ep);
+    return new ol.Feature({
+      geometry: new ol.geom.Circle(ep, 300000),
+      name: 'Circle'
     });
   }
 };
