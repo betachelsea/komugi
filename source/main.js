@@ -13,7 +13,7 @@ var main = function() {
   var transferManager = new TransferManager();
   transferManager.initialize(AllJSON);
   var human = new Human();
-  human.init(AllJSON);
+  human.init(AllJSON, { subIconCategory: "mugi"}); // "mugi" or "kome" or "tomo"
   var layerList = [
     new ol.layer.Tile({
       // source: new ol.source.BingMaps({
