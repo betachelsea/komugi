@@ -102,6 +102,16 @@ TransferManager.prototype = {
           country: item.country
         });
         this.transferCollection.push(transferModel);
+
+        /*
+        var transferModel2 = new Transfer({
+          start_latlng: [slat, slon],
+          end_latlng: [elat, elon],
+          distance: distance_count_list[i].distance,
+          country: distance_count_list[i].country
+        });
+        this.transferCollection.push(transferModel2);
+        */
       }
     }
     console.log(this.transferCollection);// 4000件くらいの国同士のつながりを保持
@@ -116,8 +126,7 @@ TransferManager.prototype = {
     var featureList = [];
     for (var i=0; i<showlist.length; i++) {
       featureList.push(this.getFeatureFromModel(showlist[i]));
-      var circleModel = this.getCircleFromModel(showlist[i]);
-      featureList.push(circleModel);
+      featureList.push(this.getCircleFromModel(showlist[i]));
     }
     this.vectorSource = new ol.source.Vector({
       features: featureList
