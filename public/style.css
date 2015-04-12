@@ -1,5 +1,58 @@
-#popup {
-  padding-bottom: 45px;
+@charset "UTF-8";
+
+body {
+  margin: 0 auto;
+  text-align: center;
+  font-family: "小塚ゴシック Pro R",'メイリオ','Meiryo','Hiragino Kaku Gothic Pro','ヒラギノ角ゴ Pro W3','Osaka','ＭＳ Ｐゴシック',sans-serif;
+}
+
+p {
+  margin: 0;
+}
+
+.map {
+  height: 600px;
+  width: 100%;
+}
+
+.credit {
+  color: #ffffff;
+  padding: 10px 10px;
+}
+
+#top {
+  width: auto;
+}
+
+#topImage {
+  width: 100%;
+  background-image: url("img/bg.jpg");
+  background-size: cover;
+}
+
+#logo {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
+#scrollArrow {
+  text-align: center;
+}
+
+#arrow {
+  text-align: center;
+  width: 50px;
+  margin-bottom: 30px;
+}
+
+#welcome {
+  color: green;
+}
+
+#footer {
+  background: green;
+  margin: 0;
+  padding: 0;
 }
 h2 {
   color: blue;
