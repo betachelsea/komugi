@@ -2,6 +2,7 @@ var $ = jQuery = require('jquery');
 var Bootstrap = require('bootstrap');
 var ol = require('openlayers');
 var Human = require('./js/human');
+var TransferManager = require('./js/transfer');
 var _ = require('underscore');
 
 var CountryJSON = "";//jsonデータ保持
@@ -9,6 +10,8 @@ var KomugiJSON = "";//jsonデータ保持
 var AllJSON = ""; //結合
 
 var main = function() {
+  var transferManager = new TransferManager();
+  transferManager.initialize(AllJSON);
   var human = new Human();
   human.init(AllJSON);
   var layerList = [
@@ -36,6 +39,7 @@ var main = function() {
     logo: false,
 
   });
+  transferManager.paint(map);
 
   // Click
   var el = document.getElementById('popup');
@@ -65,6 +69,9 @@ var main = function() {
         }
       });
       $(el).popover('show');
+      // clickで表示
+      console.log(feature);
+      transferManager.paintOneCountry(map, feature.get("countryName"));
     } else {
       $(el).popover('destroy');
     }
