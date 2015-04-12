@@ -119,7 +119,7 @@ $(function() {
       dataType: "json",
       success: function(data) {
         CountryJSON = data;
-        var yearDataObj = KomugiJSON["1996"];
+        var yearDataObj = KomugiJSON["2011"];
         var list = [];
         for (var i=0; i<CountryJSON.length; i++) {
           var item = CountryJSON[i];

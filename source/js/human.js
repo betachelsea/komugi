@@ -26,11 +26,11 @@ var HumanIcon = IconObj.extend({
   //メインアイコン画像
   getMainIconStyle: function() {
     var imgList = [
-      'images/komumax1.png',
-      'images/komumax2.png',
-      'images/komumax3.png',
+      'images/komumax5.png',
       'images/komumax4.png',
-      'images/komumax5.png'
+      'images/komumax3.png',
+      'images/komumax2.png',
+      'images/komumax1.png'
     ];
     var showImg = imgList[this.get("Rank") - 1];
     return new ol.style.Style({
@@ -39,7 +39,7 @@ var HumanIcon = IconObj.extend({
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
         opacity: 1,
-        scale: 0.2,
+        scale: 0.5,
         src: showImg,
         country: "国名"
       }))
@@ -58,11 +58,11 @@ var HumanIcon = IconObj.extend({
     return new ol.style.Style({
       image: new ol.style.Icon(({
         rotation: 360 * (-0.05) * Math.PI / 180,
-        anchor:[1, 140],
+        anchor:[1.8, 140],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
         opacity: 1,
-        scale: 0.2,
+        scale: 0.18,
         src: iconSrc,
         country: "国名"
       }))
