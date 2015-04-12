@@ -2,17 +2,24 @@ extends layout
 
 block content
   div(id="top")
-    img(src="./img/komugiImage.jpeg" id="topImage") 
-    a(href="#main" id="scrollArrow")
-      img(src="./img/arrow.png" id="arrow")
+    div(id="topImage")
+      div(id="logo")
+        img(src="./img/logo.png")
+      
+      a(href="#main" id="scrollArrow")
+        img(src="./img/arrow.png" id="arrow")
+    
+      p(class="credit") Team Komugi Road
     
   div(id="main")
     div(id="header")
       
-    //- p Welcome to #{title}
-    h1(id="welcome") Let's watch Komugi movement!! 
+    h1(id="welcome") Let's observe how crops move beyond borders!  
     #map.map
       #popup
     
     input(type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;")
     div(id="slider")
+      
+    div(id="footer")
+      p(class="credit") Team Komugi Road

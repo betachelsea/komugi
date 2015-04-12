@@ -19,8 +19,8 @@ var main = function() {
       // })
       // source: new ol.source.TileJSON({url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.json'})
       // source: new ol.source.OSM()
-      // source: new ol.source.MapQuest({layer: 'osm'})
-      source: new ol.source.MapQuest({layer: 'sat'})
+      source: new ol.source.MapQuest({layer: 'osm'})
+      // source: new ol.source.MapQuest({layer: 'sat'})
     })
   ];
   layerList = layerList.concat(human.getLayers());//配列結合
@@ -30,8 +30,8 @@ var main = function() {
     view: new ol.View({
       center: ol.proj.transform([0.00, 0.00],  'EPSG:4326', 'EPSG:3857'),
       maxZoom: 5,
-      minZoom: 1,
-      zoom: 1
+      minZoom: 2,
+      zoom: 3
     }),
     logo: false,
 
@@ -96,7 +96,11 @@ var main = function() {
   		return false;
   	});
   });
-  
+
+  jQuery( function() {
+    jQuery( '#jquery-ui-slider' ) . slider();
+  });
+
 };
 
 $(function() {

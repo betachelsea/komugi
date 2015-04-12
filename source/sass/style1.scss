@@ -5,8 +5,13 @@ body{
 }
 
 .map {
-  height: 400px;
+  height: 600px;
   width: 100%;
+}
+
+.credit{
+  color: #ffffff;
+  padding: 10px 10px;
 }
 
 #top{
@@ -15,6 +20,13 @@ body{
 
 #topImage{
   width: 100%;
+  background-image: url("./img/bg.jpg");
+  background-size: cover;
+}
+
+#logo{
+  padding-top: 60px;
+  padding-bottom: 40px;
 }
 
 #scrollArrow{
@@ -23,9 +35,16 @@ body{
 
 #arrow{
   text-align: center;
+  width: 50px;
+  margin-bottom: 30px;
 }
 
 #welcome{
   color: green;
+}
 
+#footer{
+  background: green;
+  margin: 0;
+  padding: 0;
 }
