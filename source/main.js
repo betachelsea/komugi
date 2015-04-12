@@ -10,6 +10,13 @@ var KomugiJSON = "";//jsonデータ保持
 var AllJSON = ""; //結合
 
 var main = function() {
+    console.log($("timeline"));
+    var timeline = $("#timeline");
+    timeline.on("change", function(event) { 
+        console.log("hoge");
+        console.log(event);
+        console.log(event.value);
+    });
   var transferManager = new TransferManager();
   transferManager.initialize(AllJSON);
   var human = new Human();
@@ -146,3 +153,7 @@ $(function() {
   };
   getKomugiDatas();
 });
+
+function change_time(t) {
+    console.log(t);
+}
