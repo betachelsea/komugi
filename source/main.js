@@ -13,7 +13,7 @@ var main = function() {
   var transferManager = new TransferManager();
   transferManager.initialize(AllJSON);
   var human = new Human();
-  human.init(AllJSON);
+  human.init(AllJSON, { subIconCategory: "mugi"}); // "mugi" or "kome" or "tomo"
   var layerList = [
     new ol.layer.Tile({
       // source: new ol.source.BingMaps({
@@ -119,7 +119,7 @@ $(function() {
       dataType: "json",
       success: function(data) {
         CountryJSON = data;
-        var yearDataObj = KomugiJSON["1996"];
+        var yearDataObj = KomugiJSON["2011"];
         var list = [];
         for (var i=0; i<CountryJSON.length; i++) {
           var item = CountryJSON[i];

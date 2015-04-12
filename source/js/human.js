@@ -8,6 +8,7 @@ var TransferManager = require('./transfer');
 var HumanIcon = IconObj.extend({
   defaults: function () {
     return _.defaults({
+      subIconCategory: "mugi",
       imgSrc: "images/hato.png",
       iconStyle: null,
       layer: null,
@@ -19,56 +20,78 @@ var HumanIcon = IconObj.extend({
       Production: 0, // 収穫量
       Rank: 1, // 太ってる度合い 1~5
       ProdPerPerson: 0, // 一人当たりの収穫量
-      feature: null
+      features: []
     }, _.result(IconObj.prototype, 'defaults'));
   },
-  getIconStyle: function() {
+  //メインアイコン画像
+  getMainIconStyle: function() {
     var imgList = [
-      'images/test1.png',
-      'images/test2.png',
-      'images/test3.png',
-      'images/test4.png',
-      'images/test5.png'
+      'images/komumax5.png',
+      'images/komumax4.png',
+      'images/komumax3.png',
+      'images/komumax2.png',
+      'images/komumax1.png'
     ];
     var showImg = imgList[this.get("Rank") - 1];
     return new ol.style.Style({
       image: new ol.style.Icon(({
         anchor:[0.5, 46],
-        //anchor:[0, 0],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
         opacity: 1,
-        scale: 0.05,
-        //size: [20, 20],
+        scale: 0.5,
         src: showImg,
         country: "国名"
       }))
     });
-  
   },
-  initialize: function(attrs, options) {
-    // 画像指定
-    var iconStyle = new ol.style.Style({
+  //サブアイコン画像
+  getSubIconStyle: function() {
+    var iconSrc = "images/" + this.get("subIconCategory");
+    if (100000000 < this.get("Production")) {
+      iconSrc += "_03.png";
+    } else if (10000000 < this.get("Production")) {
+      iconSrc += "_02.png";
+    } else {
+      iconSrc += "_01.png";
+    }
+    return new ol.style.Style({
       image: new ol.style.Icon(({
-        anchor:[0.5, 46],
+        rotation: 360 * (-0.05) * Math.PI / 180,
+        anchor:[1.8, 140],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
         opacity: 1,
-        scale: 0.2,
-        src: 'images/hato.png'
+        scale: 0.18,
+        src: iconSrc,
+        country: "国名"
       }))
     });
-    //this.set({iconStyle: iconStyle});
-    var p = ol.proj.transform([this.get("lon"), this.get("lat")], 'EPSG:4326', 'EPSG:3857');
-    this.set({feature:
-      new ol.Feature({
+  },
+  initialize: function(attrs, options) {
+    var mainPoint = ol.proj.transform([this.get("lon"), this.get("lat")], 'EPSG:4326', 'EPSG:3857');
+    var mainFeature = new ol.Feature({
         countryName: this.get("country"),
-        geometry: new ol.geom.Point(p)
-      })
+        geometry: new ol.geom.Point(mainPoint)
+      });
+    mainFeature.setStyle(this.getMainIconStyle());
+    // サブアイコン画像（あれば）セット
+    if (options.subIconCategory) {
+      this.set({subIconCategory: options.subIconCategory});
+    }
+    //var subPoint = ol.proj.transform([this.get("lon") +3, this.get("lat") -2], 'EPSG:4326', 'EPSG:3857');
+    var subPoint = ol.proj.transform([this.get("lon"), this.get("lat")], 'EPSG:4326', 'EPSG:3857');
+    var subFeature = new ol.Feature({
+      countryName: this.get("country"),
+      geometry: new ol.geom.Point(subPoint)
     });
-    this.get("feature").setStyle(this.getIconStyle());
+    subFeature.setStyle(this.getSubIconStyle());
+    this.set({ features: [subFeature, mainFeature] });
+    //this.set({feature:
+    //});
+    //this.get("feature").setStyle(this.getMainIconStyle());
     var vectorSource = new ol.source.Vector({
-      features:[this.get("feature")]
+      features: this.get("features")
     });
     this.set({layer:
       new ol.layer.Vector({
@@ -89,7 +112,7 @@ var HumanIcon = IconObj.extend({
         anchorYUnits: 'pixels',
         opacity: 1,
         scale: 0.2,
-        src: 'images/hato.png'
+        src: 'images/mugi_01.png'
       }))
     });
 
@@ -107,8 +130,9 @@ var HumanManager = function() {
   this.humanCollection;
 };
 HumanManager.prototype = {
-  init: function(country_json) {
-    this.humanCollection = new HumanCollection(country_json);
+  init: function(country_json, options) {
+    // options = { subIconCategory: "mugi" }
+    this.humanCollection = new HumanCollection(country_json, options);
   },
   getLayers: function() {
     var layers = [];
