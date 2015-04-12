@@ -115,7 +115,7 @@ $(function() {
   var getCountry = function() {
     $.ajax({
       type: "GET",
-      url: "http://localhost:3000/country.json",
+      url: "./country.json",
       dataType: "json",
       success: function(data) {
         CountryJSON = data;
@@ -138,7 +138,7 @@ $(function() {
   var getKomugiDatas = function() {
     $.ajax({
       type: "GET",
-      url: "http://localhost:3000/Wheat_data_all.json",
+      url: "./Wheat_data_all.json",
       dataType: "json",
       success: function(data) {
         KomugiJSON = data;
