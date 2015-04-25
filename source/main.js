@@ -9,11 +9,12 @@ var CountryJSON = "";//jsonデータ保持
 var KomugiJSON = "";//jsonデータ保持
 var AllJSON = ""; //結合
 
-var main = function() {
+var main = function(category) {
+
   var transferManager = new TransferManager();
   transferManager.initialize(AllJSON);
   var human = new Human();
-  human.init(AllJSON, { subIconCategory: "mugi"}); // "mugi" or "kome" or "tomo"
+  human.init(AllJSON, { subIconCategory: category}); // "mugi" or "kome" or "tomo"
   var layerList = [
     new ol.layer.Tile({
       // source: new ol.source.BingMaps({
@@ -111,11 +112,20 @@ var main = function() {
 };
 
 $(function() {
+  //取得用json決定
+  var category = "mugi";
+  var country_distance_path = "./Wheat_country_distance.json";
+  var data_all_path = "./Wheat_data_all.json";
+
+  var query = window.location.search.substring(1);
+  if (query == "kome") { category = "kome"; }
+  else if (query == "tomo") { category = "tomo" }
+
   // data優先読み込み
   var getCountry = function() {
     $.ajax({
       type: "GET",
-      url: "./country.json",
+      url: "./Wheat_country_distance.json",
       dataType: "json",
       success: function(data) {
         CountryJSON = data;
@@ -129,7 +139,7 @@ $(function() {
           list.push(_.extend(item, detail));
         }
         AllJSON = list;
-        main();
+        main(category);
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
       }
