@@ -54,6 +54,27 @@ p {
   margin: 0;
   padding: 0;
 }
+
+#categoryNav {
+  display: absolute;
+  background-color: #fff;
+}
+
+.categoryNav_category {
+  width: 44px;
+  cursor: pointer;
+}
+
+.categoryNav_category.selected {
+  width: 55px;
+}
+
+.categoryNav_category:hover {
+  -webkit-transform: scale(1.5);
+  -moz-transform: scale(1.5);
+  -ms-transform: scale(1.5);
+  -o-transform: scale(1.5);
+}
 h2 {
   color: blue;
 }
