@@ -9,11 +9,29 @@ var CountryJSON = "";//jsonデータ保持
 var KomugiJSON = "";//jsonデータ保持
 var AllJSON = ""; //結合
 
-var main = function() {
+var _category = "mugi";
+
+var DATA = {
+  "mugi": {
+    "country_distance_path": "./Wheat_country_distance.json",
+    "data_all_path": "./Wheat_data_all.json"
+  },
+  "kome": {
+    "country_distance_path": "./Rice_country_location_distance.json",
+    "data_all_path": "./Rice_data_all.json"
+  },
+  "tomo": {
+    "country_distance_path": "./Maize_country_location_distance.json",
+    "data_all_path": "./Maize_data_all.json"
+  }
+}
+
+var draw = function() {
+
   var transferManager = new TransferManager();
   transferManager.initialize(AllJSON);
   var human = new Human();
-  human.init(AllJSON, { subIconCategory: "mugi"}); // "mugi" or "kome" or "tomo"
+  human.init(AllJSON, { subIconCategory: _category}); // "mugi" or "kome" or "tomo"
   var layerList = [
     new ol.layer.Tile({
       // source: new ol.source.BingMaps({
@@ -27,6 +45,7 @@ var main = function() {
     })
   ];
   layerList = layerList.concat(human.getLayers());//配列結合
+  $("#map").empty();// TODO: やっつけ実装なのでol.Mapをclearするような方法があったらそちらにする
   var map = new ol.Map({
     target: 'map',
     layers: layerList,
@@ -110,43 +129,61 @@ var main = function() {
 
 };
 
+var getKomugiDatas = function() {
+  console.log(DATA[_category]["data_all_path"]);
+  $.ajax({
+    type: "GET",
+    url: DATA[_category]["data_all_path"],
+    dataType: "json",
+    success: function(data) {
+      KomugiJSON = data;
+      getCountry();
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+    }
+  });
+};
+// data優先読み込み
+var getCountry = function() {
+  $.ajax({
+    type: "GET",
+    url: DATA[_category]["country_distance_path"],
+    dataType: "json",
+    success: function(data) {
+      CountryJSON = data;
+      var yearDataObj = KomugiJSON["2011"];
+      var list = [];
+      for (var i=0; i<CountryJSON.length; i++) {
+        var item = CountryJSON[i];
+        if (!item) continue;
+        var detail = yearDataObj[item["country"]]
+        if (!detail) continue;
+        list.push(_.extend(item, detail));
+      }
+      AllJSON = list;
+      draw();
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+    }
+  });
+};
+
 $(function() {
-  // data優先読み込み
-  var getCountry = function() {
-    $.ajax({
-      type: "GET",
-      url: "./country.json",
-      dataType: "json",
-      success: function(data) {
-        CountryJSON = data;
-        var yearDataObj = KomugiJSON["2011"];
-        var list = [];
-        for (var i=0; i<CountryJSON.length; i++) {
-          var item = CountryJSON[i];
-          if (!item) continue;
-          var detail = yearDataObj[item["country"]]
-          if (!detail) continue;
-          list.push(_.extend(item, detail));
-        }
-        AllJSON = list;
-        main();
-      },
-      error: function(XMLHttpRequest, textStatus, errorThrown) {
-      }
-    });
+  _category = "mugi"
+
+  var startMapShow = function() {
+    $("#categoryNav").children().removeClass("selected");
+    $("#categoryNav > img[data-category='"+ _category +"']").addClass("selected");
+    getKomugiDatas();
   };
-  var getKomugiDatas = function() {
-    $.ajax({
-      type: "GET",
-      url: "./Wheat_data_all.json",
-      dataType: "json",
-      success: function(data) {
-        KomugiJSON = data;
-        getCountry();
-      },
-      error: function(XMLHttpRequest, textStatus, errorThrown) {
-      }
-    });
-  };
-  getKomugiDatas();
+
+  // Events
+  $(".categoryNav_category").click(function(e) {
+    var target = $(e.target);
+    _category = target.attr("data-category");
+    startMapShow();
+  });
+
+  startMapShow();
+
 });
